@@ -48,5 +48,4 @@ jQuery(window).load(function() {
 		function () {
 			jQuery(this).remove();
 		});
-	;
 });
