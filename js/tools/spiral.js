@@ -80,7 +80,7 @@ pg.tools.spiral = function () {
             if (event.event.button > 0) return;  // only first mouse button
             path.simplify(0.1);
             selectionLine.remove();
-            // pg.undo.snapshot('spiral');
+            pg.undo.snapshot('spiral');
         };
 
         tool.activate();
@@ -89,7 +89,6 @@ pg.tools.spiral = function () {
     var deactivateTool = function () {
         tool.remove();
     };
-
 
     return {
         options: options,
