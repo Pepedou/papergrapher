@@ -79,6 +79,10 @@ pg.tools.arc = function () {
     };
 
     var deactivateTool = function () {
+        for (var i = 0; i < marks.length; ++i) {
+            marks[i].remove();
+        }
+
         crosshairs.remove();
         tool.remove();
     };
