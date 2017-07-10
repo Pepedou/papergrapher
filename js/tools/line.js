@@ -49,21 +49,32 @@ pg.tools.line = function () {
 
         tool.onMouseMove = function (event) {
             if (!line) return;
+
+            var lastFixedPoint = line.segments[line.segments.length - 2];
+            var vectorBetweenPointAndLastFixedPoint = event.point - lastFixedPoint.point;
+
             if (event.modifiers.shift) {
-                var previousToLastSegment = line.segments[line.segments.length - 2];
-                var vectorBetweenPointAndLastFixedPoint = event.point - previousToLastSegment.point;
-                console.log(vectorBetweenPointAndLastFixedPoint);
-                console.log(vectorBetweenPointAndLastFixedPoint.quadrant);
+                var lineShouldSnapToHorizontal =
+                    (vectorBetweenPointAndLastFixedPoint.angle >= 45
+                    && vectorBetweenPointAndLastFixedPoint.angle < 135)
+                    ||
+                    (vectorBetweenPointAndLastFixedPoint.angle >= -135
+                    && vectorBetweenPointAndLastFixedPoint.angle < -45);
 
-
-                if ((vectorBetweenPointAndLastFixedPoint.angle >= 45 && vectorBetweenPointAndLastFixedPoint.angle < 135)
-                    || (vectorBetweenPointAndLastFixedPoint.angle >= -135 && vectorBetweenPointAndLastFixedPoint.angle < -45)) {
+                if (lineShouldSnapToHorizontal) {
                     line.lastSegment.point.y = event.point.y;
-                    line.lastSegment.point.x = previousToLastSegment.point.x;
+                    line.lastSegment.point.x = lastFixedPoint.point.x;
                 } else {
                     line.lastSegment.point.x = event.point.x;
-                    line.lastSegment.point.y = previousToLastSegment.point.y;
+                    line.lastSegment.point.y = lastFixedPoint.point.y;
                 }
+            } else if (event.modifiers.alt) {
+                var isQuadrantPair = vectorBetweenPointAndLastFixedPoint.quadrant % 2 === 0;
+                var direction = isQuadrantPair ? -1 : 1;
+                var rect = new Rectangle(event.downPoint,
+                    new Size(vectorBetweenPointAndLastFixedPoint.x, vectorBetweenPointAndLastFixedPoint.x * direction));
+
+                line.lastSegment.point = rect.bottomRight;
             } else {
                 line.lastSegment.point = event.point;
             }
@@ -86,7 +97,6 @@ pg.tools.line = function () {
             }
         };
 
-        // setup floating tool options panel in the editor
         pg.toolOptionPanel.setup(options, components);
 
         tool.activate();
