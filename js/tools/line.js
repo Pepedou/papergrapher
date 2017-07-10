@@ -60,11 +60,9 @@ pg.tools.line = function () {
                     || (vectorBetweenPointAndLastFixedPoint.angle >= -135 && vectorBetweenPointAndLastFixedPoint.angle < -45)) {
                     line.lastSegment.point.y = event.point.y;
                     line.lastSegment.point.x = previousToLastSegment.point.x;
-                    console.log(90);
                 } else {
                     line.lastSegment.point.x = event.point.x;
                     line.lastSegment.point.y = previousToLastSegment.point.y;
-                    console.log(0)
                 }
             } else {
                 line.lastSegment.point = event.point;
